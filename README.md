@@ -1,93 +1,57 @@
-# Todo List App
+class TodoListApp:
+    def __init__(self):
+        self.data_file = "todo_list_data.txt"
+        self.load_data()
 
-A simple command-line Todo List application written in Python. This app allows users to add, remove, and list todo items. The todo list is saved to a file called `todo_list_data.txt`.
+    def load_data(self):
+        try:
+            with open(self.data_file, "r") as f:
+                self.todo_list = [line.strip() for line in f.readlines()]
+        except FileNotFoundError:
+            self.todo_list = []
 
-## Features
+    def save_data(self):
+        with open(self.data_file, "w") as f:
+            for item in self.todo_list:
+                f.write(item + "\n")
 
-- Add items to the todo list
-- Remove items from the todo list
-- List all todo items
-- Data persistence (todo items are saved to a file)
+    def add_item(self, item):
+        self.todo_list.append(item)
+        self.save_data()
 
-## Requirements
+    def remove_item(self, item_number):
+        try:
+            del self.todo_list[item_number - 1]
+            self.save_data()
+        except IndexError:
+            print("Invalid item number")
 
-- Python 3.x
+    def list_items(self):
+        for i, item in enumerate(self.todo_list, start=1):
+            print(f"{i}. {item}")
 
-## Installation
+    def run(self):
+        while True:
+            print("\nTodo List App")
+            print("1. Add item")
+            print("2. Remove item")
+            print("3. List items")
+            print("4. Quit")
+            choice = input("Choose an option: ")
 
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/your-username/todo-list-app.git
-    cd todo-list-app
-    ```
+            if choice == "1":
+                item = input("Enter a new item: ")
+                self.add_item(item)
+            elif choice == "2":
+                item_number = int(input("Enter the item number to remove: "))
+                self.remove_item(item_number)
+            elif choice == "3":
+                self.list_items()
+            elif choice == "4":
+                break
+            else:
+                print("Invalid option")
 
-2. (Optional) Create and activate a virtual environment:
-    ```sh
-    python -m venv venv
-    source venv/bin/activate   # On Windows: venv\Scripts\activate
-    ```
-
-## Usage
-
-1. Run the application:
-    ```sh
-    python todo_list_app.py
-    ```
-
-2. Follow the on-screen prompts to add, remove, or list todo items.
-
-## Example
-
-```sh
-Todo List App
-1. Add item
-2. Remove item
-3. List items
-4. Quit
-Choose an option: 1
-Enter a new item: Buy groceries
-
-Todo List App
-1. Add item
-2. Remove item
-3. List items
-4. Quit
-Choose an option: 3
-1. Buy groceries
-
-
-
-3. **.gitignore**
-
-```gitignore
-# Ignore the virtual environment directory
-venv/
-# Ignore Python cache files
-__pycache__/
-*.pyc
-# Ignore data file
-todo_list_data.txt
-
-
-MIT License
-
-Copyright (c) [year] [your name]
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
+if __name__ == "__main__":
+    app = TodoListApp()
+    app.run()
